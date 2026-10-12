@@ -1,0 +1,36 @@
+{
+  "id": 55412,
+  "number": "55412",
+  "status": "processing",
+  "date_created": "2026-10-11T12:15:00Z",
+  "total": "2499.00",
+  "payment_method": "cod",
+  "payment_method_title": "Cash on delivery",
+  "billing": {
+    "first_name": "Rahul",
+    "last_name": "Sharma",
+    "email": "rahul.sharma@example.com",
+    "phone": "+91 9820000123"
+  },
+  "shipping": {
+    "first_name": "Rahul",
+    "last_name": "Sharma",
+    "address_1": "Flat 302, Palm Heights",
+    "address_2": "Sector 45",
+    "city": "Gurugram",
+    "state": "Haryana",
+    "postcode": "122003",
+    "country": "IN"
+  },
+  "line_items": [
+    {
+      "id": 112,
+      "name": "Men Leather Formal Shoes",
+      "product_id": 4432,
+      "variation_id": 0,
+      "quantity": 1,
+      "total": "2499.00",
+      "sku": "SHOES-M-BRW"
+    }
+  ]
+}

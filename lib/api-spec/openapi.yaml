@@ -1,0 +1,1950 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Margin Pilot API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: System health and readiness probes
+  - name: auth
+    description: Merchant authentication and API key management
+  - name: orders
+    description: Order management, lifecycle events, and scoring
+  - name: catalogs
+    description: Customers, products, couriers, and pincodes
+  - name: logistics
+    description: Shipments, NDR rescue cases, and RTO recovery cases
+  - name: policies
+    description: Versioned rule and engine policy management
+  - name: decisions
+    description: Decision audit history
+  - name: dashboard
+    description: Executive profit & RTO protection metrics
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      tags: [health]
+      summary: Liveness check
+      responses:
+        "200":
+          description: Service is alive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check alias
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /ready:
+    get:
+      operationId: getReadiness
+      tags: [health]
+      summary: Readiness probe (verifies database pool)
+      responses:
+        "200":
+          description: Database and services ready
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadinessStatus"
+        "503":
+          description: Service not ready
+
+  /auth/signup:
+    post:
+      operationId: signup
+      tags: [auth]
+      summary: Merchant signup with new store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupInput"
+      responses:
+        "201":
+          description: Merchant created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Merchant login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/refresh:
+    post:
+      operationId: refreshTokens
+      tags: [auth]
+      summary: Refresh access token using refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshInput"
+      responses:
+        "200":
+          description: Refreshed tokens
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/api-keys:
+    get:
+      operationId: listApiKeys
+      tags: [auth]
+      summary: List all active API keys for authenticated store
+      responses:
+        "200":
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKeyDto"
+    post:
+      operationId: createApiKey
+      tags: [auth]
+      summary: Generate a new per-store API key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApiKeyInput"
+      responses:
+        "201":
+          description: Created API key with plaintext secret shown once
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateApiKeyResponse"
+
+  /auth/api-keys/{id}:
+    delete:
+      operationId: revokeApiKey
+      tags: [auth]
+      summary: Revoke an API key
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders for store (paginated & filterable)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: paymentMethod
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: journey
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: pincode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderDto"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderInput"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get order details by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update order attributes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderInput"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+
+  /orders/{id}/evaluate:
+    post:
+      operationId: evaluateOrder
+      tags: [orders]
+      summary: Calculate risk score, journey EV, and persist decision record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationResultDto"
+
+  /orders/{id}/events:
+    post:
+      operationId: addOrderEvent
+      tags: [orders]
+      summary: Append lifecycle event and automatically re-score
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderEventInput"
+      responses:
+        "200":
+          description: Updated order with newly evaluated score and status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDto"
+
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [catalogs]
+      summary: List customers
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Customers list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CustomerDto"
+    post:
+      operationId: createCustomer
+      tags: [catalogs]
+      summary: Create customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerInput"
+      responses:
+        "201":
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDto"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [catalogs]
+      summary: Get customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDto"
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [catalogs]
+      summary: List products
+      responses:
+        "200":
+          description: Products list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductDto"
+    post:
+      operationId: createProduct
+      tags: [catalogs]
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductInput"
+      responses:
+        "201":
+          description: Created product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDto"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [catalogs]
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDto"
+
+  /couriers:
+    get:
+      operationId: listCouriers
+      tags: [catalogs]
+      summary: List couriers
+      responses:
+        "200":
+          description: Couriers list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourierDto"
+    post:
+      operationId: createCourier
+      tags: [catalogs]
+      summary: Create courier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourierInput"
+      responses:
+        "201":
+          description: Created courier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourierDto"
+
+  /pincodes:
+    get:
+      operationId: listPincodes
+      tags: [catalogs]
+      summary: List pincode stats
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Pincode stats list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PincodeStatDto"
+    post:
+      operationId: upsertPincode
+      tags: [catalogs]
+      summary: Upsert pincode stats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePincodeInput"
+      responses:
+        "201":
+          description: Upserted pincode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PincodeStatDto"
+
+  /shipments:
+    get:
+      operationId: listShipments
+      tags: [logistics]
+      summary: List shipments
+      responses:
+        "200":
+          description: Shipments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShipmentDto"
+    post:
+      operationId: createShipment
+      tags: [logistics]
+      summary: Manifest / create shipment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateShipmentInput"
+      responses:
+        "201":
+          description: Created shipment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentDto"
+
+  /ndr-cases:
+    get:
+      operationId: listNdrCases
+      tags: [logistics]
+      summary: List NDR rescue cases
+      responses:
+        "200":
+          description: NDR cases list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NdrCaseDto"
+
+  /ndr-cases/{id}/action:
+    post:
+      operationId: actOnNdrCase
+      tags: [logistics]
+      summary: Execute or record NDR rescue action
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NdrActionInput"
+      responses:
+        "200":
+          description: Updated NDR case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NdrCaseDto"
+
+  /rto-cases:
+    get:
+      operationId: listRtoCases
+      tags: [logistics]
+      summary: List RTO recovery cases
+      responses:
+        "200":
+          description: RTO cases list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RtoCaseDto"
+
+  /rto-cases/{id}/action:
+    post:
+      operationId: actOnRtoCase
+      tags: [logistics]
+      summary: Execute RTO inventory recovery decision
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RtoActionInput"
+      responses:
+        "200":
+          description: Updated RTO case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RtoCaseDto"
+
+  /policies:
+    get:
+      operationId: listPolicies
+      tags: [policies]
+      summary: List all active engine policies
+      responses:
+        "200":
+          description: Active policies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PolicyDto"
+    post:
+      operationId: createPolicy
+      tags: [policies]
+      summary: Create a new version of a policy or activate rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePolicyInput"
+      responses:
+        "201":
+          description: Created policy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PolicyDto"
+
+  /decisions:
+    get:
+      operationId: listDecisions
+      tags: [decisions]
+      summary: List audited scoring decisions
+      parameters:
+        - name: orderId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Decisions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DecisionDto"
+
+  /decisions/{id}:
+    get:
+      operationId: getDecision
+      tags: [decisions]
+      summary: Get single decision by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Decision details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecisionDto"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get executive profit protection & RTO metrics
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummaryDto"
+
+  /listings:
+    get:
+      operationId: listListings
+      tags: [listings]
+      summary: List listings with accuracy scores
+      parameters:
+        - name: platform
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of listings with scores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListingScoreSummaryDto"
+
+  /listings/summary:
+    get:
+      operationId: getListingsSummary
+      tags: [listings]
+      summary: High-level overview of listing intelligence metrics
+      responses:
+        "200":
+          description: Listing intelligence summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingIntelSummaryDto"
+
+  /listings/import:
+    post:
+      operationId: importListings
+      tags: [listings]
+      summary: Import listings via CSV/JSON mapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportListingsInput"
+      responses:
+        "201":
+          description: Listings imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResponse"
+
+  /reviews/import:
+    post:
+      operationId: importReviews
+      tags: [listings]
+      summary: Import reviews and return reasons via CSV/JSON mapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportReviewsInput"
+      responses:
+        "201":
+          description: Reviews imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResponse"
+
+  /listings/pipeline/run:
+    post:
+      operationId: runListingPipeline
+      tags: [listings]
+      summary: Run listing intelligence analysis pipeline
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RunListingPipelineInput"
+      responses:
+        "200":
+          description: Pipeline executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PipelineRunResultDto"
+
+  /listing-alerts:
+    get:
+      operationId: listListingAlerts
+      tags: [listings]
+      summary: List listings requiring attention
+      responses:
+        "200":
+          description: Active listing alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ListingAlertDto"
+
+  /listings/{id}:
+    get:
+      operationId: getListingDetail
+      tags: [listings]
+      summary: Get single listing with issues and evidence reviews
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detailed listing analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingDetailDto"
+        "404":
+          description: Listing not found
+
+  /listing-issues/{id}:
+    patch:
+      operationId: updateListingIssue
+      tags: [listings]
+      summary: Acknowledge or resolve listing issue
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateListingIssueInput"
+      responses:
+        "200":
+          description: Updated listing issue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingIssueDto"
+        "404":
+          description: Issue not found
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ReadinessStatus:
+      type: object
+      properties:
+        status:
+          type: string
+        database:
+          type: string
+        uptimeSeconds:
+          type: number
+      required:
+        - status
+        - database
+        - uptimeSeconds
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    SignupInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        storeName:
+          type: string
+        userName:
+          type: string
+      required:
+        - email
+        - password
+        - storeName
+
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    RefreshInput:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+        - refreshToken
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        storeId:
+          type: string
+        userId:
+          type: string
+        email:
+          type: string
+      required:
+        - accessToken
+        - refreshToken
+        - storeId
+        - userId
+        - email
+
+    CreateApiKeyInput:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    CreateApiKeyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        apiKey:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - apiKey
+        - createdAt
+
+    ApiKeyDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lastUsedAt:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - createdAt
+
+    TimelineItem:
+      type: object
+      properties:
+        label:
+          type: string
+        at:
+          type: string
+      required:
+        - label
+        - at
+
+    OrderDto:
+      type: object
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        customerId:
+          type: string
+        courierId:
+          type: string
+        pincode:
+          type: string
+        qty:
+          type: integer
+        value:
+          type: integer
+        payment:
+          type: string
+        address:
+          type: string
+        addressComplete:
+          type: boolean
+        addressVerified:
+          type: boolean
+        otpPassed:
+          type: boolean
+        advancePaid:
+          type: boolean
+        campaign:
+          type: string
+        status:
+          type: string
+        journey:
+          type: string
+        score:
+          type: integer
+        created:
+          type: string
+        timeline:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimelineItem"
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        ndrReason:
+          type: string
+        rescueAction:
+          type: string
+        rescueMessage:
+          type: string
+        recoveryAction:
+          type: string
+        inventoryRoute:
+          type: string
+        recoveredValue:
+          type: integer
+      required:
+        - id
+        - productId
+        - customerId
+        - courierId
+        - pincode
+        - qty
+        - value
+        - payment
+        - address
+        - addressComplete
+        - addressVerified
+        - otpPassed
+        - advancePaid
+        - campaign
+        - status
+        - journey
+        - score
+        - created
+        - timeline
+
+    CreateOrderInput:
+      type: object
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        customerId:
+          type: string
+        courierId:
+          type: string
+        pincode:
+          type: string
+        qty:
+          type: integer
+        value:
+          type: integer
+        payment:
+          type: string
+        address:
+          type: string
+        campaign:
+          type: string
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+      required:
+        - productId
+        - customerId
+        - courierId
+        - pincode
+        - value
+        - payment
+        - address
+
+    UpdateOrderInput:
+      type: object
+      properties:
+        status:
+          type: string
+        journey:
+          type: string
+        advancePaid:
+          type: boolean
+        addressVerified:
+          type: boolean
+        addressComplete:
+          type: boolean
+        otpPassed:
+          type: boolean
+        ndrReason:
+          type: string
+        rescueAction:
+          type: string
+        rescueMessage:
+          type: string
+        recoveryAction:
+          type: string
+        inventoryRoute:
+          type: string
+        recoveredValue:
+          type: integer
+        timelineLabel:
+          type: string
+
+    OrderEventInput:
+      type: object
+      properties:
+        event:
+          type: string
+      required:
+        - event
+
+    CustomerDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+        ordersCount:
+          type: integer
+        rtosCount:
+          type: integer
+        prepaidCount:
+          type: integer
+      required:
+        - id
+        - name
+        - phone
+        - city
+        - ordersCount
+        - rtosCount
+        - prepaidCount
+
+    CreateCustomerInput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+      required:
+        - name
+        - phone
+        - city
+
+    ProductDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: integer
+        cogs:
+          type: integer
+        damageRate:
+          type: number
+      required:
+        - id
+        - name
+        - price
+        - cogs
+        - damageRate
+
+    CreateProductInput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: integer
+        cogs:
+          type: integer
+        damageRate:
+          type: number
+      required:
+        - name
+        - price
+        - cogs
+
+    CourierDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        successRate:
+          type: number
+        forwardCost:
+          type: integer
+        reverseCost:
+          type: integer
+      required:
+        - id
+        - name
+        - successRate
+        - forwardCost
+        - reverseCost
+
+    CreateCourierInput:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        successRate:
+          type: number
+        forwardCost:
+          type: integer
+        reverseCost:
+          type: integer
+      required:
+        - id
+        - name
+        - successRate
+        - forwardCost
+        - reverseCost
+
+    PincodeStatDto:
+      type: object
+      properties:
+        code:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        rtoRate:
+          type: number
+        successRate:
+          type: number
+      required:
+        - code
+        - city
+        - state
+        - rtoRate
+        - successRate
+
+    CreatePincodeInput:
+      type: object
+      properties:
+        code:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        rtoRate:
+          type: number
+        successRate:
+          type: number
+      required:
+        - code
+        - city
+        - state
+        - rtoRate
+        - successRate
+
+    ShipmentDto:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        courierId:
+          type: string
+        awbNumber:
+          type: string
+        trackingStatus:
+          type: string
+        forwardCost:
+          type: integer
+        reverseCost:
+          type: integer
+      required:
+        - id
+        - orderId
+        - courierId
+        - awbNumber
+        - trackingStatus
+        - forwardCost
+        - reverseCost
+
+    CreateShipmentInput:
+      type: object
+      properties:
+        orderId:
+          type: string
+        courierId:
+          type: string
+        awbNumber:
+          type: string
+      required:
+        - orderId
+        - courierId
+        - awbNumber
+
+    NdrCaseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        reason:
+          type: string
+        rescueAction:
+          type: string
+        rescueMessage:
+          type: string
+        includesGoodwill:
+          type: boolean
+        status:
+          type: string
+      required:
+        - id
+        - orderId
+        - reason
+        - rescueAction
+        - rescueMessage
+        - includesGoodwill
+        - status
+
+    NdrActionInput:
+      type: object
+      properties:
+        rescueAction:
+          type: string
+        rescueMessage:
+          type: string
+        status:
+          type: string
+      required:
+        - rescueAction
+
+    RtoCaseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        recoveryAction:
+          type: string
+        inventoryRoute:
+          type: string
+        recoveredValue:
+          type: integer
+        status:
+          type: string
+      required:
+        - id
+        - orderId
+        - recoveryAction
+        - inventoryRoute
+        - recoveredValue
+        - status
+
+    RtoActionInput:
+      type: object
+      properties:
+        recoveryAction:
+          type: string
+        inventoryRoute:
+          type: string
+        recoveredValue:
+          type: integer
+        status:
+          type: string
+      required:
+        - recoveryAction
+        - inventoryRoute
+
+    PolicyDto:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+        action:
+          type: string
+        version:
+          type: string
+        isActive:
+          type: boolean
+      required:
+        - id
+        - type
+        - value
+        - action
+        - version
+        - isActive
+
+    CreatePolicyInput:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+        action:
+          type: string
+        version:
+          type: string
+        isActive:
+          type: boolean
+      required:
+        - type
+        - value
+        - action
+
+    DecisionDto:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        score:
+          type: integer
+        chosenJourney:
+          type: string
+        explanation:
+          type: string
+        policyVersion:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - orderId
+        - score
+        - chosenJourney
+        - explanation
+        - policyVersion
+        - createdAt
+
+    ScoreFactorDto:
+      type: object
+      properties:
+        name:
+          type: string
+        points:
+          type: integer
+        reason:
+          type: string
+      required:
+        - name
+        - points
+        - reason
+
+    JourneyResultDto:
+      type: object
+      properties:
+        name:
+          type: string
+        retention:
+          type: number
+        rtoMult:
+          type: number
+        cost:
+          type: number
+        ev:
+          type: integer
+        successMargin:
+          type: integer
+      required:
+        - name
+        - retention
+        - rtoMult
+        - cost
+        - ev
+        - successMargin
+
+    EvaluationResultDto:
+      type: object
+      properties:
+        score:
+          type: integer
+        pRto:
+          type: number
+        factors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScoreFactorDto"
+        marginSuccess:
+          type: integer
+        rtoLoss:
+          type: integer
+        best:
+          $ref: "#/components/schemas/JourneyResultDto"
+        journeys:
+          type: array
+          items:
+            $ref: "#/components/schemas/JourneyResultDto"
+        explanation:
+          type: string
+      required:
+        - score
+        - pRto
+        - factors
+        - marginSuccess
+        - rtoLoss
+        - best
+        - journeys
+        - explanation
+
+    DashboardSummaryDto:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        realisedRevenue:
+          type: integer
+        expectedMargin:
+          type: integer
+        avgRtoRate:
+          type: number
+        totalRecoveryValue:
+          type: integer
+        marginSavedVsBaseline:
+          type: integer
+      required:
+        - totalOrders
+        - realisedRevenue
+        - expectedMargin
+        - avgRtoRate
+        - totalRecoveryValue
+        - marginSavedVsBaseline
+
+    ListingScoreSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        sku:
+          type: string
+        platform:
+          type: string
+        title:
+          type: string
+        category:
+          type: string
+          nullable: true
+        price:
+          type: number
+        sizeChartPresent:
+          type: boolean
+        accuracyScore:
+          type: integer
+        dominantIssue:
+          type: string
+          nullable: true
+        listingCausedReturnCount:
+          type: integer
+        totalReviewsCount:
+          type: integer
+        totalReturnsCount:
+          type: integer
+        estimatedLoss:
+          type: integer
+        estimatedSaving:
+          type: integer
+        riskModifier:
+          type: number
+        openIssuesCount:
+          type: integer
+        status:
+          type: string
+        calculatedAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - sku
+        - platform
+        - title
+        - price
+        - sizeChartPresent
+        - accuracyScore
+        - listingCausedReturnCount
+        - totalReviewsCount
+        - totalReturnsCount
+        - estimatedLoss
+        - estimatedSaving
+        - riskModifier
+        - openIssuesCount
+        - status
+
+    ListingIntelSummaryDto:
+      type: object
+      properties:
+        totalListings:
+          type: integer
+        flaggedListings:
+          type: integer
+        averageAccuracyScore:
+          type: integer
+        totalEstimatedLoss:
+          type: integer
+        totalEstimatedSaving:
+          type: integer
+        openIssuesCount:
+          type: integer
+        criticalIssuesCount:
+          type: integer
+      required:
+        - totalListings
+        - flaggedListings
+        - averageAccuracyScore
+        - totalEstimatedLoss
+        - totalEstimatedSaving
+        - openIssuesCount
+        - criticalIssuesCount
+
+    ImportListingsInput:
+      type: object
+      properties:
+        platform:
+          type: string
+          default: shopify
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+        - items
+
+    ImportReviewsInput:
+      type: object
+      properties:
+        platform:
+          type: string
+          default: shopify
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+        - items
+
+    ImportResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        platform:
+          type: string
+        isSimulated:
+          type: boolean
+        importedCount:
+          type: integer
+        importedReviewsCount:
+          type: integer
+        importedReturnReasonsCount:
+          type: integer
+        totalImported:
+          type: integer
+      required:
+        - success
+        - platform
+        - isSimulated
+
+    PipelineRunResultDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reviewsAnalyzed:
+          type: integer
+        imageChecksCompleted:
+          type: integer
+        scoresCalculated:
+          type: integer
+        issuesCreated:
+          type: integer
+      required:
+        - success
+        - reviewsAnalyzed
+        - imageChecksCompleted
+        - scoresCalculated
+        - issuesCreated
+
+    ListingAlertDto:
+      type: object
+      properties:
+        listingId:
+          type: string
+        sku:
+          type: string
+        platform:
+          type: string
+        title:
+          type: string
+        accuracyScore:
+          type: integer
+        dominantIssue:
+          type: string
+          nullable: true
+        listingCausedReturns:
+          type: integer
+        estimatedLoss:
+          type: integer
+        estimatedSaving:
+          type: integer
+        riskModifier:
+          type: number
+        issues:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              issueType:
+                type: string
+              severity:
+                type: string
+              status:
+                type: string
+              evidenceText:
+                type: string
+                nullable: true
+              suggestedAction:
+                type: string
+                nullable: true
+            required:
+              - id
+              - issueType
+              - severity
+              - status
+      required:
+        - listingId
+        - sku
+        - platform
+        - title
+        - accuracyScore
+        - listingCausedReturns
+        - estimatedLoss
+        - estimatedSaving
+        - riskModifier
+        - issues
+
+    ListingDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+        sku:
+          type: string
+        platform:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        category:
+          type: string
+          nullable: true
+        price:
+          type: number
+        sizeChartPresent:
+          type: boolean
+        status:
+          type: string
+        score:
+          type: object
+          nullable: true
+        issues:
+          type: array
+          items:
+            type: object
+        images:
+          type: array
+          items:
+            type: object
+        topAspects:
+          type: array
+          items:
+            type: object
+            properties:
+              aspect:
+                type: string
+              positive:
+                type: integer
+              negative:
+                type: integer
+            required:
+              - aspect
+              - positive
+              - negative
+        evidenceReviews:
+          type: array
+          items:
+            type: object
+      required:
+        - id
+        - sku
+        - platform
+        - title
+        - price
+        - sizeChartPresent
+        - status
+        - issues
+        - images
+        - topAspects
+        - evidenceReviews
+
+    UpdateListingIssueInput:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, in_review, acknowledged, resolved, dismissed]
+        resolutionNotes:
+          type: string
+
+    ListingIssueDto:
+      type: object
+      properties:
+        id:
+          type: string
+        storeId:
+          type: string
+        listingId:
+          type: string
+        issueType:
+          type: string
+        severity:
+          type: string
+        status:
+          type: string
+        evidenceText:
+          type: string
+          nullable: true
+        suggestedAction:
+          type: string
+          nullable: true
+        isHumanReviewed:
+          type: boolean
+        confidence:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - storeId
+        - listingId
+        - issueType
+        - severity
+        - status
+        - isHumanReviewed
+        - createdAt
+        - updatedAt
+
+    RunListingPipelineInput:
+      type: object
+      properties:
+        listingId:
+          type: string
+

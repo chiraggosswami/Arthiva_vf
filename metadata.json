@@ -1,0 +1,8 @@
+{
+  "name": "Margin Pilot",
+  "description": "Profit-aware order and delivery operations platform for Indian D2C ecommerce, scoring orders, optimizing journeys, and automating rescue and recovery.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

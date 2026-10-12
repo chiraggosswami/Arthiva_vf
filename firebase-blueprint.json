@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile and workspace metadata",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name"
+        },
+        "storeName": {
+          "type": "string",
+          "description": "User brand or store name"
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "User profile avatar URL"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp when profile was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp when profile was last updated"
+        }
+      },
+      "required": ["userId", "email"]
+    },
+    "Seller": {
+      "title": "Seller",
+      "description": "Brand seller workspace and connection metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique stable seller identifier" },
+        "name": { "type": "string", "description": "Seller business name" },
+        "description": { "type": "string", "description": "Short description of business" },
+        "category": { "type": "string", "description": "Product vertical / category" },
+        "connectionMode": { "type": "string", "enum": ["live_sync", "csv_import", "demo"], "description": "Integration mode" },
+        "connectionStatus": { "type": "string", "enum": ["not_connected", "connecting", "connected", "error"], "description": "Live sync connection state" },
+        "lastConnectedAt": { "type": "string", "description": "ISO timestamp of last verified event/order" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" },
+        "paletteIndex": { "type": "number", "description": "Color theme palette index" }
+      },
+      "required": ["id", "name", "connectionMode", "connectionStatus"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order with pricing, delivery details, and profit intelligence",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Stable order identifier" },
+        "sellerId": { "type": "string", "description": "Owning seller ID" },
+        "productId": { "type": "string", "description": "Product ID or slug" },
+        "productName": { "type": "string", "description": "Catalog product name" },
+        "value": { "type": "number", "description": "Order price in INR" },
+        "cogs": { "type": "number", "description": "Cost of goods sold in INR" },
+        "payment": { "type": "string", "enum": ["COD", "Prepaid", "Partial COD"], "description": "Payment method" },
+        "status": { "type": "string", "description": "Operational delivery status" },
+        "pincode": { "type": "string", "description": "Destination 6-digit PIN" },
+        "city": { "type": "string", "description": "Delivery city" },
+        "state": { "type": "string", "description": "Delivery state" },
+        "customerName": { "type": "string", "description": "Customer name" },
+        "customerPhone": { "type": "string", "description": "Customer contact number" },
+        "address": { "type": "string", "description": "Street address" },
+        "campaign": { "type": "string", "description": "Marketing campaign source" },
+        "score": { "type": "number", "description": "Computed health score 0-100" },
+        "journey": { "type": "string", "description": "Assigned intervention journey" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["id", "sellerId", "value", "payment", "status"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Lifecycle event or webhook update for orders and couriers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique event identifier" },
+        "type": { "type": "string", "description": "Event type e.g. order_created, status_updated, ndr_raised, payment_captured" },
+        "sellerId": { "type": "string", "description": "Associated seller ID" },
+        "orderId": { "type": "string", "description": "Associated order ID" },
+        "timestamp": { "type": "string", "description": "ISO timestamp" },
+        "payload": { "type": "object", "description": "Raw or structured event payload" }
+      },
+      "required": ["id", "type", "sellerId", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile and workspace settings"
+    },
+    "/sellers/{sellerId}": {
+      "schema": "Seller",
+      "description": "Seller profile and live connection metadata"
+    },
+    "/sellers/{sellerId}/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders belonging to the seller"
+    },
+    "/sellers/{sellerId}/events/{eventId}": {
+      "schema": "Event",
+      "description": "Audit and operational events stream for the seller"
+    }
+  }
+}

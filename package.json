@@ -1,0 +1,28 @@
+{
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "artifacts/*",
+    "lib/*",
+    "scripts"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@workspace/margin-pilot",
+    "build": "npm run build --workspace=@workspace/margin-pilot",
+    "typecheck": "tsc --build",
+    "lint": "npm run typecheck",
+    "test:live": "npm --workspace=@workspace/scripts exec tsx ./src/e2eLiveSellerTest.ts"
+  },
+  "private": true,
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@google/genai": "^2.28.0",
+    "firebase": "^13.0.0",
+    "i18next": "^26.4.4",
+    "react-i18next": "^17.0.16"
+  }
+}

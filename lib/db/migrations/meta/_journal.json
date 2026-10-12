@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791734145773,
+      "tag": "0000_neat_turbo",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791734420759,
+      "tag": "0001_dazzling_william_stryker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791736499235,
+      "tag": "0002_groovy_thor_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791737100000,
+      "tag": "0003_workflow_state_machines",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791748000000,
+      "tag": "0004_listing_intelligence",
+      "breakpoints": true
+    }
+  ]
+}

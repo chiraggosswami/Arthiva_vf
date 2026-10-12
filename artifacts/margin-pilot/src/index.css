@@ -1,0 +1,771 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* LIGHT MODE */
+:root {
+  --background: 150 12% 96%;
+  --foreground: 190 66% 16%;
+  --border: 150 10% 86%;
+  --card: 0 0% 100%;
+  --card-foreground: 190 66% 16%;
+  --card-border: 150 10% 86%;
+  --sidebar: 190 66% 16%;
+  --sidebar-foreground: 150 15% 94%;
+  --sidebar-border: 190 45% 24%;
+  --sidebar-primary: 39 91% 57%;
+  --sidebar-primary-foreground: 190 66% 16%;
+  --sidebar-accent: 190 45% 24%;
+  --sidebar-accent-foreground: 150 15% 94%;
+  --sidebar-ring: 39 91% 57%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 190 66% 16%;
+  --popover-border: 150 10% 86%;
+  --primary: 190 66% 16%;
+  --primary-foreground: 150 15% 96%;
+  --secondary: 150 13% 91%;
+  --secondary-foreground: 190 45% 24%;
+  --muted: 150 13% 91%;
+  --muted-foreground: 195 10% 40%;
+  --accent: 39 91% 57%;
+  --accent-foreground: 190 66% 16%;
+  --destructive: 4 65% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 150 10% 82%;
+  --ring: 190 66% 30%;
+  --chart-1: 190 66% 25%;
+  --chart-2: 39 91% 57%;
+  --chart-3: 151 63% 33%;
+  --chart-4: 4 65% 50%;
+  --chart-5: 195 10% 40%;
+  --app-font-sans: 'Hanken Grotesk', sans-serif;
+  --app-font-serif: 'Bricolage Grotesque', sans-serif;
+  --app-font-mono: 'Hanken Grotesk', sans-serif;
+  --radius: 0.8rem;
+  --button-outline: rgba(0, 0, 0, 0.1);
+  --badge-outline: rgba(0, 0, 0, 0.05);
+
+  /* Automatic computation of border around primary / danger buttons */
+  --opaque-button-border-intensity: -8; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(0, 0, 0, 0.03);
+  --elevate-2: rgba(0, 0, 0, 0.08);
+
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0); /*replace with H S L */
+  --shadow-sm:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-md:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-lg:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xl:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+
+  /* Fallback for older browsers */
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(
+    from hsl(var(--sidebar-primary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(
+    from hsl(var(--sidebar-accent)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(
+    from hsl(var(--primary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(
+    from hsl(var(--secondary)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(
+    from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) /
+      alpha
+  );
+
+  /* Fallback for older browsers */
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(
+    from hsl(var(--accent)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+
+  /* Fallback for older browsers */
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(
+    from hsl(var(--destructive)) h s
+      calc(l + var(--opaque-button-border-intensity)) / alpha
+  );
+}
+
+.dark {
+  --background: 150 12% 96%;
+  --foreground: 190 66% 16%;
+  --border: 150 10% 86%;
+  --card: 0 0% 100%;
+  --card-foreground: 190 66% 16%;
+  --card-border: 150 10% 86%;
+  --sidebar: 190 66% 16%;
+  --sidebar-foreground: 150 15% 94%;
+  --sidebar-border: 190 45% 24%;
+  --sidebar-primary: 39 91% 57%;
+  --sidebar-primary-foreground: 190 66% 16%;
+  --sidebar-accent: 190 45% 24%;
+  --sidebar-accent-foreground: 150 15% 94%;
+  --sidebar-ring: 39 91% 57%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 190 66% 16%;
+  --popover-border: 150 10% 86%;
+  --primary: 190 66% 16%;
+  --primary-foreground: 150 15% 96%;
+  --secondary: 150 13% 91%;
+  --secondary-foreground: 190 45% 24%;
+  --muted: 150 13% 91%;
+  --muted-foreground: 195 10% 40%;
+  --accent: 39 91% 57%;
+  --accent-foreground: 190 66% 16%;
+  --destructive: 4 65% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 150 10% 82%;
+  --ring: 190 66% 30%;
+  --chart-1: 190 66% 25%;
+  --chart-2: 39 91% 57%;
+  --chart-3: 151 63% 33%;
+  --chart-4: 4 65% 50%;
+  --chart-5: 195 10% 40%;
+  --button-outline: rgba(255, 255, 255, 0.1);
+  --badge-outline: rgba(255, 255, 255, 0.05);
+
+  --opaque-button-border-intensity: 9; /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.09);
+
+  --background: 150 12% 96%;
+
+  --foreground: 190 66% 16%;
+
+  --border: 150 10% 86%;
+
+  --card: 0 0% 100%;
+
+  --card-foreground: 190 66% 16%;
+
+  --card-border: 150 10% 86%;
+
+  --sidebar: 190 66% 16%;
+
+  --sidebar-foreground: 150 15% 94%;
+
+  --sidebar-border: 190 45% 24%;
+
+  --sidebar-primary: 39 91% 57%;
+
+  --sidebar-primary-foreground: 190 66% 16%;
+
+  --sidebar-accent: 190 45% 24%;
+
+  --sidebar-accent-foreground: 150 15% 94%;
+
+  --sidebar-ring: 39 91% 57%;
+
+  --popover: 0 0% 100%;
+
+  --popover-foreground: 190 66% 16%;
+
+  --popover-border: 150 10% 86%;
+
+  --primary: 190 66% 16%;
+
+  --primary-foreground: 150 15% 96%;
+
+  --secondary: 150 13% 91%;
+
+  --secondary-foreground: 190 45% 24%;
+
+  --muted: 150 13% 91%;
+
+  --muted-foreground: 195 10% 40%;
+
+  --accent: 39 91% 57%;
+
+  --accent-foreground: 190 66% 16%;
+
+  --destructive: 4 65% 50%;
+
+  --destructive-foreground: 0 0% 100%;
+
+  /* Used as the border around inputs. Dark mode: Should be a border that is light enough to have high contrast when rendered on a --card background. More contrast than standard --border */
+  --input: 150 10% 82%;
+  --ring: 190 66% 30%;
+  --chart-1: 190 66% 25%;
+  --chart-2: 39 91% 57%;
+  --chart-3: 151 63% 33%;
+  --chart-4: 4 65% 50%;
+  --chart-5: 195 10% 40%;
+
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-sm:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-md:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-lg:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-xl:
+    0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; font-family: var(--app-font-sans); background: #f4f6f5; font-size: 14px; line-height: 1.55; color: #173d42; }
+h1,h2,h3,.display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.035em; }
+button,input,select { font: inherit; }
+:focus-visible { outline: 3px solid #f5a524; outline-offset: 2px; }
+.money { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.page-enter { animation: enter .32s ease-out both; }
+@keyframes enter { from { opacity: .65; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+.app-shell{min-height:100dvh;display:flex;color:#173d42}.sidebar{width:245px;flex:none;background:#0e3b43;color:#e7f0ed;padding:16px 14px 14px;display:flex;flex-direction:column;min-height:100dvh;position:sticky;top:0;height:100dvh;max-height:100dvh;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.2) transparent}.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-track{background:transparent}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:4px}.sidebar::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.35)}.brand{display:flex;gap:11px;align-items:center;color:#f0f4f1;text-decoration:none;font:700 20px 'Bricolage Grotesque';letter-spacing:-.04em;padding:2px 6px;margin-bottom:2px}.brand-mark{width:32px;height:32px;border-radius:10px;background:#f5a524;color:#0e3b43;display:grid;place-items:center}.brand-light{font-weight:500;opacity:.72}.brand small{display:block;font:600 9px 'Hanken Grotesk';letter-spacing:.16em;color:#9db5b1;margin-top:1px}.workspace{display:flex;align-items:center;gap:9px;padding:9px 10px;margin:12px 0 10px;border:1px solid #28565c;border-radius:10px;font-size:12.5px;font-weight:600}.workspace-dot{width:9px;height:9px;border-radius:50%;background:#f5a524}.workspace-caret{margin-left:auto;color:#adc0bd}.nav-label,.eyebrow{font:700 11px 'Hanken Grotesk';letter-spacing:.14em;color:#738683}.sidebar .nav-label{color:#91aaa7;padding:0 8px 6px}.nav-links{display:grid;gap:3px}.nav-link{display:flex;align-items:center;gap:10px;padding:7.5px 10px;text-decoration:none;color:#bed0cd;border-radius:8px;font-size:12.5px;font-weight:600}.nav-link:hover,.nav-link.active{background:#204c52;color:#fff}.nav-link.active:before{content:"";position:absolute;margin-left:-10px;width:3px;height:18px;background:#f5a524;border-radius:0 3px 3px 0}.nav-count{margin-left:auto;font-size:11px;color:#9db5b1}.sidebar-bottom{margin-top:auto;border-top:1px solid #28565c;padding:12px 4px 2px;display:flex;align-items:center;gap:10px;color:#bed0cd;flex-shrink:0}.sidebar-bottom div:nth-child(2){display:grid;gap:3px;flex:1}.sidebar-bottom b{font-size:12px;color:#e3efec}.sidebar-bottom small{font-size:11px;color:#9db5b1}.today-dot{width:8px;height:8px;border-radius:50%;background:#4dbf85}.main{min-width:0;flex:1}.topbar{height:64px;background:#fbfcfb;border-bottom:1px solid #e3e9e6;display:flex;align-items:center;justify-content:space-between;padding:0 36px}.crumb{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:#748581}.crumb span{padding:0 9px;color:#c3ceca}.crumb b{color:#173d42}.top-actions{display:flex;align-items:center;gap:17px}.live{font-size:12.5px;color:#657673}.live i,.status i{display:inline-block;width:7px;height:7px;background:#1f8a5b;border-radius:50%;margin-right:6px}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;padding:11px 16px;text-decoration:none;font-size:13px;font-weight:700;cursor:pointer;transition:transform .16s,background .16s}.button:hover{transform:translateY(-1px)}.button-primary{background:#0e3b43;color:#f5f7f5}.button-primary:hover{background:#1c5358}.button-soft{background:#e9efec;color:#23484a}.top-new{padding:10px 14px}.icon-button{border:0;background:transparent;color:#5b6b70;display:grid;place-items:center;cursor:pointer}.avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#f7e4bd;color:#644819;font-size:11px;font-weight:700}.content{max-width:1500px;margin:auto;padding:29px 36px 52px}.page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin:0 0 23px}.page-heading .eyebrow{color:#718581}.page-heading h1{font-size:32px;line-height:1.08;margin:7px 0 5px;font-weight:700;color:#123c42}.page-heading p{font-size:14px;color:#70817d;margin:0}.page-heading>.button{margin-bottom:2px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid #e1e8e4;border-radius:20px;padding:20px;min-height:124px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(14,59,67,0.04);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.stat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(14,59,67,0.08);border-color:#9bbcaf}
+.stat:after{content:"";position:absolute;right:-19px;top:-28px;width:81px;height:81px;border-radius:50%;background:#f2f6f4}
+.stat-mint:after{background:#eaf5ef}
+.stat-amber:after{background:#fcf2dd}
+.stat-coral:after{background:#faece9}
+.stat-top{position:relative;z-index:1;color:#667a75;font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.stat-top>svg{color:#1f8a5b}
+.stat strong{display:block;font:700 27px 'Bricolage Grotesque';letter-spacing:-.04em;margin:11px 0 4px;color:#0e3b43}
+.stat small{color:#82918e;font-size:12px}
+.positive{color:#1f8a5b;font-weight:700}
+.dashboard-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:13px}
+.panel{background:#fff;border:1px solid #e1e8e4;border-radius:20px;padding:20px 22px;min-width:0;box-shadow:0 2px 10px rgba(14,59,67,0.04);transition:box-shadow .2s ease}
+.panel:hover{box-shadow:0 6px 18px rgba(14,59,67,0.06)}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.panel-head h2{font:600 17px 'Bricolage Grotesque';margin:5px 0 0;letter-spacing:-.025em;color:#0e3b43}
+.panel-head .eyebrow{color:#7b8b87}
+.trend-panel{min-height:294px}
+.legend{display:flex;align-items:center;gap:6px;color:#778782;font-size:9px}
+.legend i{width:7px;height:7px;border-radius:50%;background:#0e3b43}
+.legend .legend-amber{margin-left:7px;background:#f5a524}
+.chart-wrap{height:184px;margin-top:12px}
+.chart-caption{display:flex;justify-content:space-between;padding-top:11px;border-top:1px solid #edf1ef;color:#82918d;font-size:10px}
+.chart-caption b{color:#1f8a5b;display:flex;align-items:center;gap:3px}
+.channel-panel{min-height:294px}
+.channel-chart{height:192px;margin:5px -5px 0}
+.channel-note{border-top:1px solid #edf1ef;display:flex;justify-content:space-between;padding-top:10px;font-size:10px;color:#82918d}
+.channel-note b{color:#0e3b43}
+.more-button{border:0;background:#f2f6f4;color:#71817d;border-radius:5px;padding:5px 7px;display:flex;gap:5px;align-items:center;font-size:10px}
+.text-link,.feed-link{color:#1b655f;font-size:12px;text-decoration:none;font-weight:700;display:flex;align-items:center;gap:5px}
+.risk-list{margin-top:13px}
+.risk-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid #edf1ef;text-decoration:none;color:inherit}
+.risk-icon{width:32px;height:32px;border-radius:8px;background:#fcf1e0;color:#bb8016;display:grid;place-items:center}
+.risk-main{flex:1;min-width:0}
+.risk-main b{font-size:13px}
+.risk-main b span{font-weight:500;color:#61716d;margin-left:5px}
+.risk-main small,.risk-side small{display:block;color:#84918e;font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.risk-side{text-align:right}
+.risk-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.risk-pill i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.risk-pill.low{color:#1d8057;background:#e9f5ee}
+.risk-pill.mid{color:#a76c05;background:#fcf2dd}
+.risk-pill.high{color:#bd4136;background:#faece9}
+.pincode-panel{padding-bottom:14px}
+.muted-icon{color:#84938f}
+.pin-list{margin-top:14px}
+.pin-row{display:flex;align-items:center;gap:9px;padding:8px 0}
+.pin-rank{font:600 11px 'Hanken Grotesk';color:#b1bdb8;width:18px}
+.pin-city{display:grid;min-width:110px;gap:2px}
+.pin-city b{font-size:12.5px}
+.pin-city small{font-size:11px;color:#899692}
+.pin-bar{height:6px;background:#edf1ee;border-radius:4px;flex:1}
+.pin-bar i{height:100%;display:block;background:#d97950;border-radius:4px}
+.pin-rate{font-size:12px;color:#a94c3e;width:32px;text-align:right;font-weight:600}
+.pin-foot{border-top:1px solid #edf1ef;margin-top:9px;padding-top:10px;color:#8a9894;font-size:11.5px}
+.decisions{grid-column:1/-1}
+.decision-count{font-size:11px;letter-spacing:.08em;color:#1e755c;background:#eaf5ef;border-radius:15px;padding:6px 10px;font-weight:700}
+.decision-feed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:15px 0}
+.decision-row{display:flex;align-items:flex-start;gap:11px;padding:13px 12px;background:#f7f9f8;border-radius:10px;text-decoration:none;color:inherit}
+.decision-marker{width:28px;height:28px;border-radius:8px;background:#eaf5ef;color:#1f8a5b;display:grid;place-items:center;flex:none}
+.marker-1{background:#fcf2dd;color:#a76c05}
+.marker-2{background:#e9f0f4;color:#4c7273}
+.decision-row>span:nth-child(2){flex:1;min-width:0}
+.decision-row b{font-size:12.5px;display:block}
+.decision-row small{display:block;font-size:11px;line-height:1.45;color:#7c8b87;margin-top:4px}
+.decision-row strong{font:600 13px 'Bricolage Grotesque';color:#1b5a55}
+.feed-link{justify-content:flex-end}
+
+/* From Uiverse.io by NK2552003 - Adapted to Margin-Pilot Brand Palette */
+.card {
+  background: #ffffff;
+  border: 1px solid #e1e8e4;
+  border-radius: 20px;
+  padding: 18px;
+  max-width: 260px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(14, 59, 67, 0.04), 0 1px 3px rgba(14, 59, 67, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(14, 59, 67, 0.08);
+  border-color: #9bbcaf;
+}
+
+.card .header,
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card .title,
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0e3b43;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.full-stats-btn {
+  background: #ffffff;
+  border: 1.5px solid #e1e8e4;
+  border-radius: 5px;
+  padding: 4px 9px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #0e3b43;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.full-stats-btn:hover {
+  background: #f0f4f1;
+  border-color: #9bbcaf;
+  color: #0e3b43;
+}
+
+.range {
+  margin-bottom: 4px;
+}
+
+.range-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #0e3b43;
+  letter-spacing: -0.5px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.range-unit {
+  font-size: 28px;
+  font-weight: 300;
+  color: #82918e;
+  margin-left: 4px;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.date-range {
+  font-size: 11px;
+  color: #71827d;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.chart-container {
+  position: relative;
+  height: 90px;
+  margin-bottom: 20px;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 100%;
+  position: relative;
+  padding: 0 14px;
+}
+
+.avg-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 45%;
+  height: 1.5px;
+  background: #e1e8e4;
+  z-index: 1;
+}
+
+.avg-label {
+  position: absolute;
+  top: -35%;
+  right: 0;
+  background: #0e3b43;
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(14, 59, 67, 0.15);
+}
+
+.bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  z-index: 2;
+}
+
+.bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bar {
+  width: 20px;
+  background: linear-gradient(to bottom, #0e3b43 0%, #1f8a5b 100%);
+  border-radius: 10px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.bar.bar-amber {
+  background: linear-gradient(to bottom, #d97706 0%, #f5a524 100%);
+}
+
+.bar.bar-coral {
+  background: linear-gradient(to bottom, #bd4136 0%, #faece9 100%);
+}
+
+.bar:hover {
+  transform: scale(1.05);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border: 1.5px solid #1f8a5b;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dot-top {
+  top: -4px;
+}
+
+.dot-bottom {
+  bottom: -4px;
+}
+
+.day-label {
+  font-size: 9px;
+  color: #71827d;
+  font-weight: 500;
+}
+
+/* Bar heights - Monday through Sunday */
+.bar-mo {
+  height: 32px;
+  margin-bottom: 8px;
+}
+.bar-tu {
+  height: 44px;
+  margin-bottom: 14px;
+}
+.bar-we {
+  height: 25px;
+  margin-bottom: 12px;
+}
+.bar-th {
+  height: 32px;
+  margin-bottom: 10px;
+}
+.bar-fr {
+  height: 44px;
+  margin-bottom: 14px;
+}
+.bar-sa {
+  height: 38px;
+  margin-bottom: 12px;
+}
+.bar-su {
+  height: 28px;
+  margin-bottom: 13px;
+}
+
+.readings {
+  border-top: 1.5px solid #edf1ef;
+  padding-top: 12px;
+}
+
+.reading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1.5px solid #edf1ef;
+}
+
+.reading:last-child {
+  border-bottom: none;
+}
+
+.reading-time {
+  font-size: 9px;
+  color: #82918e;
+  font-weight: 500;
+}
+
+.reading-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0e3b43;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+.orders-toolbar{display:flex;align-items:center;gap:10px;padding:14px;background:#fff;border:1px solid #e1e8e4;border-radius:14px;box-shadow:0 2px 8px rgba(14,59,67,0.03)}.search-box{display:flex;align-items:center;gap:10px;flex:1;min-width:180px;color:#82918d;padding:0 8px}.search-box input{border:0;outline:0;min-width:0;flex:1;color:#21454a;font-size:13.5px;background:transparent}.orders-toolbar select{border:1px solid #e5ebe8;background:#fbfcfb;border-radius:8px;padding:9px 12px;font-size:13px;color:#526763;max-width:160px;font-weight:600}.filter-icon{color:#78908a}.orders-meta{display:flex;justify-content:space-between;color:#365650;font-weight:700;font-size:13px;padding:16px 2px 9px}.orders-meta span{font-size:12px;color:#81908c;font-weight:400}.table-wrap{background:#fff;border:1px solid #e1e8e4;border-radius:14px;overflow:auto;box-shadow:0 2px 10px rgba(14,59,67,0.03)}table{border-collapse:collapse;width:100%;min-width:850px}th{text-align:left;font:700 11.5px 'Hanken Grotesk';letter-spacing:.08em;color:#6b7f7a;background:#f8faf9;padding:14px 16px;border-bottom:1px solid #e7ece9}td{padding:14px 16px;border-bottom:1px solid #edf1ef;font-size:13.5px;color:#2b4642}tbody tr:last-child td{border:0}tbody tr:hover{background:#f8faf9}.order-title{font-weight:700;color:#145158;text-decoration:none;display:flex;align-items:center;gap:5px;font-size:14px}.table-sub{display:block;font-size:12px;color:#80908b;margin-top:4px;white-space:nowrap}.journey-name{font-weight:600;font-size:13px}.status{display:inline-flex;align-items:center;border-radius:20px;background:#eef4f0;padding:5px 9px;font-size:11.5px;font-weight:600;color:#497568;white-space:nowrap}.status i{width:6px;height:6px;background:#69a989}.status.done{background:#e9f5ee;color:#1f8057}.status.bad{background:#faece9;color:#bd4136}.status.bad i{background:#c8372d}.status.warn{background:#fcf2dd;color:#a76c05}.status.warn i{background:#f5a524}.right{text-align:right}.expected{font-weight:700;color:#164e4a;font-size:14px}.row-arrow{display:grid;place-items:center;color:#83928e}.empty-state{text-align:center;padding:58px 20px;color:#81908c}.empty-state h3{color:#22484a;margin:10px 0 5px;font-size:18px}.empty-state p{font-size:14px;margin:0 0 14px}
+
+.detail-back{display:flex;gap:9px;align-items:center;color:#8a9894;font-size:10px;margin-bottom:19px}.detail-back a{color:#28625d;text-decoration:none;font-weight:700}.detail-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(265px,.8fr);gap:14px;align-items:start}.detail-main,.detail-aside{display:grid;gap:13px}.health-panel .panel-head{align-items:center}.score-ring{width:55px;height:55px;border-radius:50%;background:conic-gradient(#f5a524 var(--score),#e8eeeb 0);display:grid;place-content:center;text-align:center;position:relative}.score-ring:before{content:"";position:absolute;inset:5px;border-radius:50%;background:white}.score-ring b,.score-ring small{position:relative;z-index:1}.score-ring b{font:700 17px 'Bricolage Grotesque';line-height:17px}.score-ring small{font-size:8px;color:#87938f}.factor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 20px;margin:18px 0}.factor>div:first-child{display:flex;justify-content:space-between;font-size:10px}.factor>div:first-child b{color:#31504c}.factor>div:first-child span{font-size:9px;color:#87938f}.factor p{font-size:9px;line-height:1.45;color:#788983;min-height:25px;margin:5px 0 7px}.factor-track,.preview-meter{height:4px;border-radius:3px;background:#edf1ee;overflow:hidden}.factor-track i,.preview-meter i{display:block;height:100%;background:#4f9a7a;border-radius:3px}.risk-formula{display:flex;align-items:center;gap:8px;padding:10px 11px;background:#f7f9f8;border-radius:7px;font-size:10px;color:#60736e}.risk-formula b{font:700 14px 'Bricolage Grotesque';color:#bd5940}.risk-formula small{margin-left:auto;font-size:9px;color:#87938f}.section-intro{font-size:10px;color:#71827e;margin:11px 0 13px}.recommended{display:flex;align-items:center;gap:5px;color:#a36f14;font-size:8px;font-weight:700;letter-spacing:.08em;background:#fcf3e2;padding:6px 8px;border-radius:20px}.journey-chart{display:grid;gap:11px}.journey-bar-row{display:grid;grid-template-columns:160px 1fr 68px;align-items:center;gap:11px;font-size:10px;color:#546964}.journey-bar-row>span{display:flex;flex-direction:column;gap:3px}.journey-bar-row small{font-size:8px;color:#26815d}.journey-bar-row>b{text-align:right;color:#657873}.bar-track{height:7px;background:#f0f3f1;border-radius:5px;overflow:hidden}.bar-track i{display:block;height:100%;background:#aabdb6;border-radius:5px}.journey-bar-row.best .bar-track i{background:#1f8a5b}.journey-bar-row.best>b{color:#1c7657}.journey-current{margin-top:15px;padding:9px 10px;background:#f5f8f6;border-radius:7px;font-size:9px;color:#81908c}.journey-current b{color:#245b54;margin-left:6px}.waterfall{margin-top:13px}.wf-item{display:flex;align-items:center;justify-content:space-between;padding:8px 2px;border-bottom:1px solid #edf1ef;font-size:10px;color:#798984}.wf-item b{font-size:10px;color:#536963}.wf-item:nth-child(2) b,.wf-item:nth-child(3) b,.wf-item:nth-child(4) b,.wf-item:nth-child(5) b{color:#bd6759}.wf-total{border:0;margin-top:4px;padding:11px 10px;border-radius:7px;background:#eaf5ef;color:#205c4a;font-weight:700}.wf-total b{color:#1f8058;font-size:13px}.order-card{padding:18px;background:#fff;border:1px solid #e1e8e4;border-radius:20px;box-shadow:0 2px 10px rgba(14,59,67,0.04);transition:box-shadow .2s ease}.snapshot-price{font:700 30px 'Bricolage Grotesque';margin-top:10px;color:#153f43}.snapshot-caption{font-size:10px;color:#7f8d89}.snapshot-rule{border-top:1px solid #e9efec;margin:15px 0 7px}.snapshot-line{display:flex;justify-content:space-between;gap:7px;padding:8px 0;font-size:9px}.snapshot-line span{display:flex;align-items:center;gap:5px;color:#84918e}.snapshot-line b{text-align:right;font-size:9px;color:#46605b}.address-box{display:grid;gap:5px;background:#f6f8f7;border-radius:7px;padding:11px;margin-top:8px}.address-box small{font-size:8px;letter-spacing:.1em;color:#879590}.address-box b{font-size:10px;line-height:1.45}.address-box span{font-size:9px;color:#72837e}.action-panel h3,.recommendation h3{font:600 15px 'Bricolage Grotesque';margin:8px 0 5px}.action-panel p,.recommendation p{font-size:9px;line-height:1.5;color:#82908d;margin:0 0 12px}.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px}.action-buttons button{display:flex;align-items:center;gap:6px;text-align:left;background:#f5f8f6;border:1px solid #e9efec;border-radius:6px;padding:8px 7px;color:#45635d;font-size:9px;cursor:pointer}.action-buttons button:hover{border-color:#9abbb0;background:#eff7f2}.action-buttons button.is-done{color:#1f8058;background:#eaf5ef}.action-buttons button:disabled{cursor:default}.timeline{margin-top:13px}.timeline-item{position:relative;display:flex;gap:9px;padding-bottom:14px}.timeline-item:not(:last-child):before{content:"";position:absolute;left:4px;top:10px;bottom:0;width:1px;background:#dfe8e3}.timeline-item>i{width:9px;height:9px;background:#4b9678;border:2px solid #e4f1ea;border-radius:50%;position:relative;z-index:1;flex:none;margin-top:2px}.timeline-item span{display:grid;gap:3px}.timeline-item b{font-size:9px;color:#45605b}.timeline-item small{font-size:8px;color:#87938f}
+
+.checkout-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.75fr);gap:14px;align-items:start}.checkout-form{padding:0 20px}.form-section{padding:19px 0;border-bottom:1px solid #edf1ef}.form-section-title{display:flex;gap:11px;align-items:flex-start;margin-bottom:14px}.form-section-title>span{width:24px;height:24px;border-radius:7px;background:#eaf1ed;display:grid;place-items:center;color:#317265;font-size:9px;font-weight:700}.form-section-title h2{font:600 15px 'Bricolage Grotesque';margin:0 0 3px}.form-section-title p{font-size:9px;color:#87938f;margin:0}.field-label{display:grid;gap:6px;color:#526965;font-weight:600;font-size:10px;margin-bottom:11px}.field-label input,.field-label select,.field-label textarea{width:100%;border:1px solid #dce5e0;background:#fbfcfb;border-radius:6px;padding:10px 11px;color:#21464a;resize:vertical;font-size:11px}.field-label input::placeholder,.field-label textarea::placeholder{color:#a4afaa}.form-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.product-economics{display:flex;gap:18px;background:#f6f8f7;border-radius:7px;padding:9px 11px;margin-top:2px;font-size:9px;color:#81908c}.product-economics span{display:grid;gap:3px}.product-economics b{font-size:10px;color:#365953}.submit-order{width:100%;margin:17px 0 19px;padding:13px}.submit-order:disabled{opacity:.45;cursor:not-allowed;transform:none}.checkout-side{display:grid;gap:12px}.score-preview{background:#0e3b43;color:#f1f5f2;border:0}.score-preview .eyebrow{color:#a8c1bc}.preview-score{display:flex;align-items:baseline;gap:4px;margin:14px 0 9px}.preview-score>b{font:700 40px 'Bricolage Grotesque';letter-spacing:-.06em}.preview-score>span{font-size:10px;color:#a2b9b5}.preview-score .risk-pill{margin-left:auto}.preview-meter{background:#28575b;height:6px}.preview-meter i{background:#f5a524}.score-preview>p{font-size:9px;color:#b2c7c2;line-height:1.55;margin:11px 0 13px}.preview-factors{border-top:1px solid #2a5559;padding-top:9px;display:grid;gap:7px}.preview-factors div{display:flex;justify-content:space-between;font-size:9px;color:#b2c7c2}.preview-factors b{color:#f2f5f3}.recommendation>.eyebrow{display:flex;align-items:center;gap:5px;color:#a36f14}.recommendation h3{font-size:18px;color:#15464a}.recommendation .waterfall{margin-top:11px}.recommendation .wf-item{padding:6px 2px;font-size:9px}.recommendation .wf-total{padding:8px}.recommend-value{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;background:#edf6f0;border-radius:7px;font-size:9px;color:#6a7e75}.recommend-value b{font:700 14px 'Bricolage Grotesque';color:#1f8058}
+
+@media(max-width:1100px){.content{padding:25px 22px 40px}.topbar{padding:0 22px}.sidebar{width:205px}.dashboard-grid{grid-template-columns:1fr 1fr}.decisions{grid-column:1/-1}.detail-grid{grid-template-columns:minmax(0,1.4fr) minmax(250px,.8fr)}.orders-toolbar{flex-wrap:wrap}.search-box{flex-basis:100%}}
+@media(max-width:767px){.app-shell{display:block}.sidebar{position:static;height:auto;min-height:0;width:100%;padding:13px 14px 10px}.brand{font-size:17px}.brand-mark{width:29px;height:29px}.workspace,.sidebar .nav-label,.sidebar-bottom{display:none}.nav-links{display:flex;margin-top:12px;gap:6px}.nav-link{padding:8px 10px;font-size:10px}.nav-link.active:before{display:none}.topbar{height:49px;padding:0 15px}.crumb{font-size:8px}.top-actions{gap:10px}.live,.icon-button,.avatar{display:none}.top-new{padding:8px 9px;font-size:10px}.content{padding:22px 14px 40px}.page-heading{align-items:flex-start;margin-bottom:17px}.page-heading h1{font-size:27px}.page-heading p{font-size:11px;max-width:280px;line-height:1.45}.page-heading>.button{font-size:9px;padding:9px}.stat-grid{grid-template-columns:1fr 1fr;gap:8px}.stat{padding:13px;min-height:106px}.stat strong{font-size:22px}.stat small{font-size:9px}.dashboard-grid{grid-template-columns:1fr;gap:10px}.decisions{grid-column:auto}.decision-feed{grid-template-columns:1fr;gap:7px}.trend-panel,.channel-panel{min-height:270px}.chart-wrap{height:170px}.channel-chart{height:178px}.orders-toolbar{gap:7px}.orders-toolbar select{flex:1;max-width:none;min-width:calc(50% - 22px)}.filter-icon{display:none}.orders-meta{padding-top:13px}.detail-grid,.checkout-layout{grid-template-columns:1fr}.detail-aside{grid-row:1}.factor-grid{grid-template-columns:1fr;gap:9px}.factor p{min-height:0}.risk-formula{flex-wrap:wrap}.risk-formula small{width:100%;margin-left:0}.journey-bar-row{grid-template-columns:130px 1fr 54px;gap:7px;font-size:9px}.detail-back{margin-bottom:14px}.checkout-form{padding:0 14px}.form-two{grid-template-columns:1fr;gap:0}.product-economics{justify-content:space-between;gap:5px}.checkout-side{grid-row:1}.order-card{display:none}.action-panel{order:2}.timeline-panel{order:3}.health-panel .panel-head h2{font-size:15px}.page-heading .risk-pill{margin-top:20px}.snapshot-price{font-size:26px}}
+@media(min-width:1101px){.stat-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(min-width:768px) and (max-width:1100px){.stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/**
+ * Using the elevate system.
+ * Automatic contrast adjustment.
+ *
+ * <element className="hover-elevate" />
+ * <element className="active-elevate-2" />
+ *
+ * // Using the tailwind utility when a data attribute is "on"
+ * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
+ * // Or manually controlling the toggle state
+ * <element className="toggle-elevate toggle-elevated" />
+ *
+ * Elevation systems have to handle many states.
+ * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
+ * - toggled or not
+ * - focused or not (this is not handled with these utilities)
+ *
+ * Even without handling focused or not, this is six possible combinations that
+ * need to be distinguished from eachother visually.
+ */
+@layer utilities {
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type='search']::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
+   * buttons/badges can remove the automatic brightness adjustment on interactions
+   * and program their own. */
+  .no-default-hover-elevate {
+  }
+
+  .no-default-active-elevate {
+  }
+
+  /**
+   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
+   * This way they can stack/compound. Both will overlap the parent's borders!
+   * So borders will be automatically adjusted both on toggle, and hover/active,
+   * and they will be compounded.
+   */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: -1;
+    /* sits behind content but above backdrop */
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  /* Does not work on elements with overflow:hidden! */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: 999;
+    /* sits in front of content */
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+    inset: -1px;
+  }
+}

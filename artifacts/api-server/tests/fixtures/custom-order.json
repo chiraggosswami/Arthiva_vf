@@ -1,0 +1,22 @@
+{
+  "orderId": "ERP-ORD-9021",
+  "customerId": "CUST-901",
+  "customerName": "Ananya Roy",
+  "customerPhone": "+91 9710000888",
+  "email": "ananya.roy@example.com",
+  "value": 3199,
+  "payment": "Prepaid",
+  "pincode": "700019",
+  "city": "Kolkata",
+  "address": "12 Southern Avenue, Keyatala",
+  "campaign": "Google Shopping",
+  "items": [
+    {
+      "productId": "P99",
+      "title": "Ceramic Table Lamp",
+      "quantity": 1,
+      "price": 3199,
+      "cogs": 950
+    }
+  ]
+}

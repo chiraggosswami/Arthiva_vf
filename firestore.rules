@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // User profiles - strict owner isolation
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && isValidId(userId)
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254;
+      allow update: if isOwner(userId) && isValidId(userId)
+        && request.resource.data.userId == resource.data.userId;
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+
+    // Shared Sellers collection
+    match /sellers/{sellerId} {
+      allow get, list: if isValidId(sellerId);
+
+      // Create seller document: validates identifier, name, connectionMode and connectionStatus
+      allow create: if isValidId(sellerId)
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.connectionMode in ['live_sync', 'csv_import', 'demo']
+        && request.resource.data.connectionStatus in ['not_connected', 'connecting', 'connected', 'error'];
+
+      // Update seller: validated schema
+      allow update: if isValidId(sellerId)
+        && request.resource.data.name is string;
+
+      allow delete: if isSignedIn() && isValidId(sellerId);
+
+      // Subcollection: Orders
+      match /orders/{orderId} {
+        allow get, list: if isValidId(sellerId);
+        allow create, update: if isValidId(sellerId)
+          && isValidId(orderId)
+          && request.resource.data.id is string
+          && request.resource.data.value is number;
+        allow delete: if isSignedIn() && isValidId(sellerId) && isValidId(orderId);
+      }
+
+      // Subcollection: Events
+      match /events/{eventId} {
+        allow get, list: if isValidId(sellerId);
+        allow create: if isValidId(sellerId)
+          && isValidId(eventId)
+          && request.resource.data.id is string
+          && request.resource.data.type is string;
+        allow update, delete: if isSignedIn() && isValidId(sellerId) && isValidId(eventId);
+      }
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
