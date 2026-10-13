@@ -1,0 +1,43 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "margin-pilot": {
+      "root": "artifacts/margin-pilot",
+      "framework": "vite",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist/public"
+    },
+    "api-server": {
+      "root": "artifacts/api-server",
+      "framework": "express",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    "mockup-sandbox": {
+      "root": "artifacts/mockup-sandbox",
+      "framework": "vite",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "api-server"
+      }
+    },
+    {
+      "source": "/webhooks/(.*)",
+      "destination": {
+        "service": "api-server"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "margin-pilot"
+      }
+    }
+  ]
+}
