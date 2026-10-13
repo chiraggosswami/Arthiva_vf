@@ -1,4 +1,4 @@
-# Margin Pilot (Arthiva Operations)
+# Arthiva 
 
 Margin Pilot is a profit-aware order and delivery operations platform tailored for Indian Direct-to-Consumer (D2C) ecommerce. Instead of evaluating orders on risk alone, it scores journeys by Expected Value (EV), automates Non-Delivery Report (NDR) rescue actions, optimizes Return-to-Origin (RTO) recovery, and supports 9 Indian vernacular languages.
 
